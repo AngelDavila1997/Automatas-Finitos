@@ -1,0 +1,131 @@
+body{
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto Condensed', sans-serif;
+	text-align: center;
+	background-color: #E7F9FD;
+}
+.titleHeader{
+	font-family: 'Roboto', sans-serif;
+	background-color: #265562;
+	padding: 10px;
+	margin-bottom: 0px;
+}
+.titleHeader h1{
+	color: white;
+	font-weight: lighter;
+	text-shadow: 2px 2px 4px black;
+}
+.inputContainer{
+	background-color: #EDDD9D;
+	padding: 10px;
+}
+input[type="text"] {
+   font-family: 'Roboto Condensed', sans-serif;
+}
+input:focus {
+  outline: 0;
+}
+select:focus {
+  outline: 0;
+}
+.inputTexto{
+	margin: 5px 2px 7px 2px;
+	padding: 5px;
+}
+.tdtextoalfab{
+	padding: 5px;
+}
+.transitiontable{
+	border-collapse: collapse;
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+th{
+	border: 1px solid black;
+	background-color: #265562;
+	color: white;
+	text-align: center;
+	font-weight: lighter;
+	padding: 5px;
+}
+.tdEstados{
+	padding: 5px;
+	text-align: center;
+	border: 1px solid black;
+}
+.tdEstados input[type="text"]{
+	padding: 5px;
+}
+.myButton {
+	background-color: #265562;
+	border-radius:4px;
+	border:1px solid #265562;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size:15px;
+	padding:7px 16px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background-color: #F4810F;
+	border:1px solid #F4810F;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+.resultadoContainer{
+	background-color: #E7F9FD;
+	padding: 20px;
+	text-align: center;
+}
+.resultado{
+	font-size: 50px;
+}
+.incidencia{
+	font-size: 30px;
+}
+.hg{
+    font-weight: bold;
+    background-color: yellow;
+}
+.hg:hover{
+	color: red;
+}
+
+.tooltip {
+  position: relative;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  background-color: #1489A5;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1489A5 transparent transparent transparent;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}

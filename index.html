@@ -1,0 +1,381 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+    <link rel="stylesheet" type="text/css" href="automatas.css"></link>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed&display=swap" rel="stylesheet">
+    <title>Simulación de Automata Finito</title>
+  </head>
+  <body>
+
+    <div class="titleHeader">
+      <h1>Simulación de autómatas finitos deterministicos</h1>
+    </div>
+
+    <center>
+    <div class="inputContainer container">
+
+            <div class="tooltip">
+              Cadena
+              <input class="inputTexto" type="text" id="cadena" name="cadena" placeholder="Ejemplo: 1010100" tabindex="0"><br>
+              <span class="tooltiptext">Añade la cadena a verificar</span>
+            </div>
+            
+            Número de caracteres en el alfabeto
+            <div class="tooltip">
+              <input class="inputTexto" type="decimal" id="x" name="x" tabindex="0" value=0 onchange="buildSigma()">
+              <span class="tooltiptext">Mínimo 1, Máximo 4</span>
+            </div>
+
+            <div id="arraySigma">
+            </div>
+
+            Número de estados
+            <div class="tooltip">
+             <input class="inputTexto" type="decimal" id="y" name="y" tabindex="0" value=0 onchange="build()" readonly>
+              <span class="tooltiptext">Añade los estados que tiene el automata</span>
+            </div>
+
+            <div id="array">
+            </div>
+
+            <div id="arrayAceptacion">
+            </div>
+
+        <input class="myButton" type="button" onclick="cadenaAceptada();" value="Validar">
+        <input class="myButton" type="button" onclick="incidencias();" value="Incidencias">
+    </div>
+    </center>
+
+    <div class="resultadoContainer" id="prueba"></div>
+
+</body>
+
+<script>
+  function cadenaAceptada(){
+    deleteInci();
+    formToArrays();
+    estados_inicial = document.getElementsByName('estados_inicial');
+    for(k=0; k< estados_inicial.length; k++){
+      if(estados_inicial[k].checked){
+        valorK=k;
+        ei= estados_inicial[k].value;
+      }
+    }
+    console.log(ei);
+    console.log(valorK);
+
+    let val = false;
+    let cadena=document.getElementById('cadena').value;
+    cadena.split("");
+    let arrayCadena = Array.from(cadena);
+    //console.log(arrayCadena);
+
+    arrayCadena.forEach(car => {
+      //console.log(car)
+      ei = transicion[ei][car];//pueder se k o ei
+      val = aceptacion[ei];
+      console.log(val);
+    });
+
+    if(val==true){
+      console.log('valido');
+      valido = document.createElement('p');
+      valido.setAttribute('class', 'resultado');
+      textvalido = document.createTextNode("La cadena es válida");
+      valido.appendChild(textvalido);
+      divprueba = document.getElementById('prueba');
+      divprueba.appendChild(valido);
+    }else{
+      console.log('no valido');
+      novalido = document.createElement('p');
+      novalido.setAttribute('class', 'resultado');
+      textnovalido = document.createTextNode("La cadena no es válida");
+      novalido.appendChild(textnovalido);
+      divprueba = document.getElementById('prueba');
+      divprueba.appendChild(novalido);
+    }
+  }
+
+  function incidencias(){
+    deleteInci();
+    formToArrays();
+    let valorK=0;
+    let ei= 'q0';
+
+    let cadena=document.getElementById('cadena').value;
+    cadena2 = cadena;
+    cadena.split("");
+    let arrayCadena = Array.from(cadena);
+    //console.log(arrayCadena);
+
+    let val = false;
+
+    longitudCadena = Number(document.getElementById('y').value) -1;
+    
+    p=0;
+    arrayCadena.forEach(car => {
+      console.log(car)
+      ei = transicion[ei][car];//pueder se k o ei
+      val = aceptacion[ei];
+      if(val==true){
+        a = cadena2.substring(0,p-longitudCadena+1);
+        b = cadena2.substring(p-longitudCadena+1,p+1);
+        c = cadena2.substring(p+1, arrayCadena.length+1);
+        v = document.createElement('div');
+        v.setAttribute('class', 'incidencia');
+        al= document.createElement('label');
+        al.setAttribute('class', 'textincidencia');
+        texta = document.createTextNode(a);
+        al.appendChild(texta);
+        bl = document.createElement('label');
+        bl.setAttribute('class','hg textincidencia');
+        textb = document.createTextNode(b);
+        bl.appendChild(textb);
+        cl = document.createElement('label');
+        cl.setAttribute('class', 'textincidencia');
+        textc = document.createTextNode(c);
+        cl.appendChild(textc);
+        v.appendChild(al);
+        v.appendChild(bl);
+        v.appendChild(cl);
+        divprueba = document.getElementById('prueba');
+        divprueba.appendChild(v);
+      }
+      p++;
+    });
+  }
+
+  function buildSigma(){
+    deleteArraySigma();
+    x = Number(document.getElementById('x').value);
+    rowa = document.createElement('tr');
+    //rowa.setAttribute('name','sigma');
+    tdalfa = document.createElement('td');
+    tdalfa.setAttribute('class', 'tdtextoalfab');
+    tdalfa.setAttribute('colspan', x);
+    text = document.createTextNode('Alfabeto');
+    tdalfa.appendChild(text);
+    rowa.appendChild(tdalfa);
+    row = document.createElement('tr');
+    row.setAttribute('name','sigma');
+    for(j = 0; j < x; j++){
+        divt = document.createElement('div');
+        divt.setAttribute('class', 'tooltip');
+        div1 = document.createElement('td');
+        input1 = document.createElement('input');
+        input1.setAttribute('class', 'inputTexto');
+        input1.setAttribute('type','text');
+        input1.setAttribute('name','sigma['+j+']');
+        input1.setAttribute('id','sigma['+j+']');
+        input1.setAttribute('onchange','validate()');
+        spant = document.createElement('span');
+        spant.setAttribute('class', 'tooltiptext');
+        textspan = document.createTextNode('Añade un carácter del alfabeto');
+        spant.appendChild(textspan);
+        divt.appendChild(input1);
+        divt.appendChild(spant);
+        div1.appendChild(divt);
+        row.appendChild(div1);
+    }
+    document.getElementById("arraySigma").appendChild(rowa);
+    document.getElementById("arraySigma").appendChild(row);
+  }
+
+  function buildAceptacion(){
+    //deleteArrayAcept();
+    y = Number(document.getElementById('y').value);
+    //row = document.createElement('tr');
+    //text = document.createTextNode('Aceptacion: ');
+    //row.appendChild(text);
+    for(j = 0; j < y; j++){
+        text = document.createTextNode('q['+j+']');
+        row.appendChild(text);
+        div1 = document.createElement('td');
+        select = document.createElement('select');
+        select.setAttribute('name','aceptacion[q'+j+']');
+        option1 = document.createElement('option');
+        option1.setAttribute('value',0);
+        text1 = document.createTextNode('No');
+        option1.appendChild(text1);
+        select.appendChild(option1);
+        option2 = document.createElement('option');
+        option2.setAttribute('value',1);
+        text2 = document.createTextNode('Si');
+        option2.appendChild(text2);
+        select.appendChild(option2);
+        //div1.appendChild(select);
+        //row.appendChild(div1);
+    }
+    //document.getElementById("arrayAceptacion").appendChild(row);
+  }
+
+  function build(){
+    deleteArray();
+    deleteArrayAcept();
+    x = Number(document.getElementById('x').value);
+    let y = Number(document.getElementById('y').value);
+
+    transtable = document.createElement('table');
+    transtable.setAttribute('class', 'transitiontable');
+
+    titlerow = document.createElement('tr');
+    titlerow.setAttribute('class', 'tabletitle');
+
+    tdinicial = document.createElement('th');
+    textinicial= document.createTextNode('Estado inicial');
+    tdinicial.appendChild(textinicial);
+
+    tdaceptacion =document.createElement('th');
+    textaceptacion= document.createTextNode('Estado de aceptación');
+    tdaceptacion.appendChild(textaceptacion);
+
+    tdtrans=document.createElement('th');
+    tdtrans.setAttribute('colspan', x+1);
+    texttrans= document.createTextNode('Tabla de transición');
+    tdtrans.appendChild(texttrans);
+
+    titlerow.appendChild(tdinicial);
+    titlerow.appendChild(tdaceptacion);
+    titlerow.appendChild(tdtrans);
+    transtable.appendChild(titlerow);
+    document.getElementById("array").appendChild(transtable);
+    
+    for(i = 0; i < y; i++){
+      row1 = document.createElement('tr');
+      row1.setAttribute('name','estados['+i+']');
+      row1.setAttribute('id','estados['+i+']');
+      //Agregar Estado inicial radio button
+      input2 = document.createElement('input');
+      input2.setAttribute('type', 'radio');
+      input2.setAttribute('id', 'estados_inicial');
+      input2.setAttribute('name', 'estados_inicial');
+      input2.setAttribute('value', 'q'+i);
+      //Agregar estados de aceptacion
+      select = document.createElement('select');
+      select.setAttribute('name','aceptacion[q'+i+']');
+      select.setAttribute('id','aceptacion[q'+i+']');
+      option1 = document.createElement('option');
+      option1.setAttribute('value',0);
+      text1 = document.createTextNode('No');
+      option1.appendChild(text1);
+      select.appendChild(option1);
+      option2 = document.createElement('option');
+      option2.setAttribute('value',1);
+      text2 = document.createTextNode('Si');
+      //Transiciones
+      option2.appendChild(text2);
+      select.appendChild(option2);
+      labelt = document.createElement('label');
+      textt = document.createTextNode('q'+i)
+      labelt.appendChild(textt);
+      /*input.setAttribute('name','transicion[q'+i+']');
+      input.setAttribute('tabindex','-1');*/
+      tdradio = document.createElement('td');
+      tdradio.setAttribute('class', 'tdEstados');
+      tdradio.appendChild(input2);
+      row1.appendChild(tdradio);
+
+      tdselect = document.createElement('td');
+      tdselect.setAttribute('class', 'tdEstados');
+      tdselect.appendChild(select);
+      row1.appendChild(tdselect);
+
+      tdest = document.createElement('td');
+      tdest.setAttribute('class', 'tdEstados');
+      tdest.appendChild(labelt);
+      row1.appendChild(tdest);
+
+      for(j = 0; j < x; j++){
+        diva = document.createElement('div');
+        diva.setAttribute('class', 'tooltip');
+        div1 = document.createElement('td');
+        div1.setAttribute('class', 'tdEstados');
+        input1 = document.createElement('input');
+        input1.setAttribute('type','text');
+        input1.setAttribute('class', 'inputEstado');
+        q = document.getElementsByName('sigma['+j+']')[0].value;
+        input1.setAttribute('name','transicion[q'+i+']['+q+']');
+        input1.setAttribute('id','transicion[q'+i+']['+q+']');
+        spana = document.createElement('span');
+        spana.setAttribute('class', 'tooltiptext');
+        textspa = document.createTextNode('Añade el estado a la tabla con una "q", y posteriormente el número correspondiente');
+        spana.appendChild(textspa);
+        diva.appendChild(input1);
+        diva.appendChild(spana);
+        div1.appendChild(diva);
+        row1.appendChild(div1);
+      }
+      transtable.appendChild(row1);
+      document.getElementById("array").appendChild(transtable);
+    }
+    //row1.appendChild(buildAceptacion());
+  }
+  function deleteArrayAcept(){
+  myNode = document.getElementById("arrayAceptacion");
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.firstChild);
+    }
+  }
+  function deleteArraySigma(){
+  myNode = document.getElementById("arraySigma");
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.firstChild);
+    }
+  }
+  function deleteArray(){
+  myNode = document.getElementById("array");
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.firstChild);
+    }
+  }
+  function deleteInci(){
+  myNode = document.getElementById("prueba");
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.firstChild);
+    }
+  }
+
+  function validate(){
+    bool = false;
+    nodes = document.getElementById('arraySigma').childNodes[0].childNodes;
+    for(k=1; k<nodes.length; k++){
+      if (nodes[k].childNodes[0].value == ''){
+        bool = true;
+      }
+    }
+    if(bool == false){
+      document.getElementById('y').removeAttribute('readonly');
+      build();
+    } else {
+      document.getElementById('y').readOnly = true;
+      deleteArray();
+    }
+  }
+
+  function formToArrays(){
+    cad = document.getElementById("cadena").value;
+    x = Number(document.getElementById('x').value);
+    sigma = [];
+    for(j = 0; j < x; j++){
+        sigma[j]=document.getElementById('sigma['+j+']').value  ;
+    }
+    transicion = [];
+    y = Number(document.getElementById('y').value);
+    for(i = 0; i < y; i++){
+      transicion['q'+i]=new Array();
+      for(j = 0; j < x; j++){
+        transicion['q'+i][sigma[j]]=document.getElementById('transicion[q'+i+']['+sigma[j]+']').value;
+      }
+    }
+    aceptacion = [];
+    for(i = 0; i < y; i++){
+      aceptacion['q'+i]=document.getElementById('aceptacion[q'+i+']').value;
+    }
+    document.getElementsByName('estado_inicial').forEach( function(radio) {
+      if(radio.checked){
+        estado_inicial = radio.value;
+      }
+    });
+  }
+</script>
+</html>
